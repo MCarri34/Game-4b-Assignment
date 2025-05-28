@@ -55,8 +55,8 @@ export class PlayerControls {
             } else if (p.body.blocked.right || p.body.touching.right || p.body.wasTouching.right) {
                 this.lastWallSide = 'right';
             }
-            if (p.body.velocity.y > 150) {                                                              // Simulate sliding by lowering the speed of player fall when sliding.
-                p.setVelocityY(150); 
+            if (p.body.velocity.y > 100) {                                                              // Simulate sliding by lowering the speed of player fall when sliding.
+                p.setVelocityY(100); 
             }
         } else {
             this.isWallSliding = false;                                                                 // If player not in contact with wall or on the ground, reset the tracker.
@@ -109,6 +109,16 @@ export class PlayerControls {
                 p.setVelocityX(-this.burst); 
             }
             this.isWallSliding = false;                                                                 // Reset wall jumping trackers
+            this.scene.isTouchingWall = false;
+        }
+        if (this.isWallSliding && this.cursors.left.isDown && this.lastWallSide === 'right') {          // detach from wall without jumping functionality                                         
+            p.setVelocityX(-30);                                                                        // if sliding and pressed left / right and touching corresponding wall, detach player by setting a constant velocity of 30 momentarily, reset trackerrs/flags
+            this.isWallSliding = false;                                                                 
+            this.scene.isTouchingWall = false;
+        }
+        if (this.isWallSliding && this.cursors.right.isDown && this.lastWallSide === 'left') {                                                     
+            p.setVelocityX(30); 
+            this.isWallSliding = false;                                                                 
             this.scene.isTouchingWall = false;
         }
     // Player Double Jump
