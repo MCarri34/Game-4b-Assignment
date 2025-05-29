@@ -5,11 +5,11 @@ export class PlayerControls {
         this.scene = scene;
         this.cursors = cursors;
         this.spaceKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
-        this.JUMP_VELOCITY = -500;
+        this.JUMP_VELOCITY = -400;
         this.ACCELERATION = 300;
         this.DRAG = 1500;                                           
         this.JUMPCOUNT = 0;                                                                             // Regular Jump Tracker
-        this.burst = 350;                                                                               // Double jump velocity constant value
+        this.burst = 150;                                                                               // Double jump velocity constant value
         this.justBurst = false;                                                                         // Double jump tracker
         this.disableDrag = false;                                                                       // Allow for constant movement in the air without player intervention
         this.lastStepTime = 0;                                         
@@ -23,7 +23,6 @@ export class PlayerControls {
         this.player.setDragX(this.DRAG);
         this.scene.physics.world.gravity.y = 1500;
         this.isWallSliding = false;                                                                     // Variable for Wall jumping
-
     }
     // Get Sprite for Platformer.js
     getSprite() {
@@ -42,6 +41,7 @@ export class PlayerControls {
                 particle.destroy(); 
             }
         });
+
     }
 
     // Update Function
@@ -126,9 +126,9 @@ export class PlayerControls {
             p.setVelocityY(this.JUMP_VELOCITY);                                                         // On second spacebar press (when not touching a wall) boost the player up by JUMP_VELOCITY again
             if (!this.justBurst) {
                 if (this.cursors.left.isDown) {                                                         // If player presses a cursor button LEFT or RIGHT before this, send them in that direction, else the movement will stay constant from before the double jump.
-                    p.setVelocityX(-this.burst);
+                    p.setVelocityX(p.body.velocity.x);
                 } else if (this.cursors.right.isDown) {
-                    p.setVelocityX(this.burst);
+                    p.setVelocityX(p.body.velocity.x);
                 }
             }
             this.JUMPCOUNT += 1;                                                                        // Increment counters to make sure jumps are finite, disable the drag for constant momentum.

@@ -9,7 +9,8 @@
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
         "": {
-            "scaleInDock": 1
+            "scaleInDock": 1,
+            "scaleInEditor": 1
         },
         "C:/Users/justa/Documents/GitHub/Platformer120/assets/platformer-level-1.tmx": {
             "scale": 0.1408420138888889,
@@ -26,18 +27,22 @@
             "scaleInDock": 1
         },
         "Level.tmx": {
-            "scale": 1.5,
+            "scale": 1,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 177.66666666666663,
-                "y": 154.66666666666666
+                "x": 270.5,
+                "y": 1410
             }
         },
         "Level.tmx#onebit-tileset": {
             "scaleInDock": 1,
             "scaleInEditor": 1
+        },
+        "Level.tmx#onebit_packed": {
+            "scaleInDock": 1
         }
     },
+    "frame.defaultDuration": 100,
     "last.exportedFilePath": "C:/Users/justa/Documents/GitHub/Game-4b-Assignment/assets",
     "last.imagePath": "C:/Users/justa/Documents/GitHub/Game-4b-Assignment/assets",
     "map.lastUsedExportFilter": "JSON map files (*.tmj *.json)",
@@ -49,6 +54,7 @@
     "project": "Level.tiled-project",
     "property.type": "bool",
     "recentFiles": [
+        "Level.tmx"
     ],
     "tileset.embedInMap": true,
     "tileset.tileSize": {

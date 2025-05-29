@@ -20,7 +20,6 @@ export class Load extends Phaser.Scene {
         // Load tilemap information
         this.load.image("tilemap_tiles", "monochrome_tilemap_transparent_packed.png");                         
         this.load.tilemapTiledJSON("Level", "Level.tmj");   
-
     }
 
     create() {
