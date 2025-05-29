@@ -45,7 +45,7 @@ export class Platformer extends Phaser.Scene {
             } else {
                 this.isTouchingWall = false;
             }
-        }, null, this);
+        }, this.oneWayPlatformCollide, this);
 
         this.cameras.main.setZoom(2);                                               // Basic camera for the play for now
         this.cameras.main.startFollow(this.player);
@@ -61,5 +61,11 @@ export class Platformer extends Phaser.Scene {
         // Update Function
     update() {
         this.playerControls.update();
+    }
+
+    onewayPlatformCollide(player, tile) {
+        if (!tile.properties.border) {
+            return player.body.veloctity.y >= 1;
+        }
     }
 }
