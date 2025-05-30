@@ -3,8 +3,9 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "Level.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "file.lastUsedOpenFilter": "All Files (*)",
     "fileStates": {
@@ -28,10 +29,10 @@
         },
         "Level.tmx": {
             "scale": 1,
-            "selectedLayer": 0,
+            "selectedLayer": -1,
             "viewCenter": {
                 "x": 270.5,
-                "y": 1410
+                "y": 1296
             }
         },
         "Level.tmx#onebit-tileset": {
@@ -50,6 +51,7 @@
     "map.tileHeight": 18,
     "map.tileWidth": 18,
     "openFiles": [
+        "Level.tmx"
     ],
     "project": "Level.tiled-project",
     "property.type": "bool",
