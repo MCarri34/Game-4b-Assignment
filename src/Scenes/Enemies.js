@@ -21,7 +21,7 @@ export class EnemyControls {
         // Set body offset to center the hitbox
         this.enemy.body.setOffset(
             (this.enemy.width - this.enemy.body.width) / 3,
-            (this.enemy.height - this.enemy.body.height) / 2
+            (this.enemy.height - this.enemy.body.height) / 1
         );
         
         this.enemy.setOrigin(0.5, 0.5);

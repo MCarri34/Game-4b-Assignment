@@ -23,6 +23,7 @@ export class Platformer extends Phaser.Scene {
         this.decorationLayer = this.map.createLayer("Decoration", this.tileset, 0,0);
         this.subDecorationLayer = this.map.createLayer("SubDecoration", this.tileset, 0,0);
         this.testLayer.setCollisionByProperty({ collides: true });
+        this.animatedTiles.init(this.map);
 
         // Create Cursors 
         this.cursors = this.input.keyboard.createCursorKeys();
@@ -35,12 +36,56 @@ export class Platformer extends Phaser.Scene {
         this.player.body.setSize(16, 16);                                           // Adjust hitbox
         this.player.body.setOffset(0, 1);
         this.isTouchingWall = false;                                                // Variable for wall jump   
+        // Player Collision Handling
+        this.physics.add.collider(this.player, this.testLayer, (player, tile) => {  // Set up collider for walls that check if the player body is touching a wall in any way shape or form
+            const body = player.body;
+            if (
+                body.blocked.left || body.blocked.right ||
+                body.touching.left || body.touching.right ||
+                body.embedded
+            ) {
+                this.isTouchingWall = true;                                         // If touching a wall, callback set isTouchingWall to true, else set it to false.
+            } else {
+                this.isTouchingWall = false;
+            }
+        }, this.oneWayPlatformCollide, this);                                       // Collision Filter
         
+        // Camera Instatiation
+        this.cameras.main.setZoom(2);                                               // Basic camera for the play for now
+        this.cameras.main.startFollow(this.player);
+
         // Enemy Instantiation
         this.enemies = [
             new EnemyControls(this, 600, 1400, 'onebit_tiles', this.testLayer),
         ]
         
+        // Interactable Object Instantiation
+        const interactableObjects = this.map.getObjectLayer("Interactables").objects;
+        this.pads = this.physics.add.staticGroup();
+        interactableObjects.forEach(obj => {
+            console.log
+            const hitbox = this.physics.add.staticImage(obj.x , obj.y , 'onebit_tiles')        // Create hitbox object for object layer items
+                .setOrigin(0, 1)    
+                .refreshBody()     
+                .setDepth(5);
+            if (obj.gid) {                                                                          // If object uses sprite, use it-- else make the hitbox invisible
+                hitbox.setVisible(true);
+                hitbox.setFrame(obj.gid - 1);
+            } else {
+                hitbox.setVisible(false);
+            }
+            if (obj.properties) {
+                obj.properties.forEach(p => {
+                    hitbox[p.name] = p.value;
+                });
+            }
+            if(hitbox.Type === 'Pad'){
+                console.log('ee')
+                this.pads.add(hitbox);
+            }
+        });
+        this.physics.add.overlap(this.player, this.pads, this.bounce, null, this);
+
         //Player Killing Enemies 
         this.enemies.forEach(enemyObj => {
             const enemy = enemyObj.getSprite();
@@ -59,27 +104,7 @@ export class Platformer extends Phaser.Scene {
                 console.log('Player hit from the side or bottom!');
             }
         });
-    });
-
-        this.add.graphics().fillStyle(0xffffff).fillRect(0, 0, 2, 2).generateTexture('whitePixel', 2, 2);
-        
-
-        this.physics.add.collider(this.player, this.testLayer, (player, tile) => {  // Set up collider for walls that check if the player body is touching a wall in any way shape or form
-            const body = player.body;
-
-            if (
-                body.blocked.left || body.blocked.right ||
-                body.touching.left || body.touching.right ||
-                body.embedded
-            ) {
-                this.isTouchingWall = true;                                         // If touching a wall, callback set isTouchingWall to true, else set it to false.
-            } else {
-                this.isTouchingWall = false;
-            }
-        }, this.oneWayPlatformCollide, this);
-
-        this.cameras.main.setZoom(2);                                               // Basic camera for the play for now
-        this.cameras.main.startFollow(this.player);
+    });        
 
         // Debug key
         this.input.keyboard.on('keydown-D', () => {
@@ -87,7 +112,12 @@ export class Platformer extends Phaser.Scene {
             this.physics.world.debugGraphic.clear();
         }, this);
     }
-    
+
+    bounce(player, pad){
+        player.setVelocityY(pad.Boost);
+    }
+
+    // One Way Pass for collidables
     oneWayPlatformCollide(player, tile) {
         if (!tile.properties.solid) {
             return player.body.velocity.y >= 1;
@@ -95,7 +125,6 @@ export class Platformer extends Phaser.Scene {
             return true;
         }
     }
-
 
         // Update Function
         update() {
