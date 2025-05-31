@@ -1,4 +1,5 @@
 import { PlayerControls } from './Player.js';
+import { EnemyControls } from './Enemies.js';
 
 export class Platformer extends Phaser.Scene {
     constructor() {
@@ -34,6 +35,32 @@ export class Platformer extends Phaser.Scene {
         this.player.body.setSize(16, 16);                                           // Adjust hitbox
         this.player.body.setOffset(0, 1);
         this.isTouchingWall = false;                                                // Variable for wall jump   
+        
+        // Enemy Instantiation
+        this.enemies = [
+            new EnemyControls(this, 600, 1400, 'onebit_tiles', this.testLayer),
+        ]
+        
+        //Player Killing Enemies 
+        this.enemies.forEach(enemyObj => {
+            const enemy = enemyObj.getSprite();
+
+            this.physics.add.collider(this.player, enemy, (player, enemy) => {
+            // Check if player is falling and hitting the top
+            const playerBottom = player.body.y + player.body.height;
+            const enemyTop = enemy.body.y;
+
+            if (player.body.velocity.y >= 0 && playerBottom <= enemyTop + 10) {
+                // Player stomped the enemy
+                enemyObj.enemy.disableBody(true, true); // Remove enemy
+                player.body.velocity.y = -200; // Small bounce effect
+            } else {
+                // Optional: handle player damage here
+                console.log('Player hit from the side or bottom!');
+            }
+        });
+    });
+
         this.add.graphics().fillStyle(0xffffff).fillRect(0, 0, 2, 2).generateTexture('whitePixel', 2, 2);
         
 
@@ -72,9 +99,12 @@ export class Platformer extends Phaser.Scene {
 
         // Update Function
         update() {
-
-
             this.playerControls.update();
+
+            // Update all enemies
+            this.enemies.forEach(enemy => {
+                enemy.update();
+            });
         }
 }
 
