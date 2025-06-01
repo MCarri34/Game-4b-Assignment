@@ -5,6 +5,7 @@ export class PlayerControls {
         this.scene = scene;
         this.cursors = cursors;
         this.spaceKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
+        this.hasDoubleJump = false;                                                                     // Player starts without power-up
         this.JUMP_VELOCITY = -400;
         this.ACCELERATION = 300;
         this.DRAG = 1500;                                           
@@ -101,8 +102,6 @@ export class PlayerControls {
         const emitter4 = this.jumpEmitter1
         emitter1.setPosition(p.body.x+3, p.body.y+16);
         emitter2.setPosition(p.body.x+13, p.body.y+16);
-        
-        
 
     // Wall Contact Tracking
         if (!p.body.blocked.down && this.scene.isTouchingWall) {
@@ -206,7 +205,7 @@ export class PlayerControls {
             this.scene.isTouchingWall = false;
         }
     // Player Double Jump
-        if (!p.body.blocked.down && Phaser.Input.Keyboard.JustDown(this.spaceKey) && this.JUMPCOUNT === 1) {
+        if (this.hasDoubleJump && !p.body.blocked.down && Phaser.Input.Keyboard.JustDown(this.spaceKey) && this.JUMPCOUNT === 1) {
             p.setVelocityY(this.JUMP_VELOCITY);                                                         // On second spacebar press (when not touching a wall) boost the player up by JUMP_VELOCITY again
             if (!this.justBurst) {
                 if (this.cursors.left.isDown) {                                                         // If player presses a cursor button LEFT or RIGHT before this, send them in that direction, else the movement will stay constant from before the double jump.
@@ -218,8 +217,13 @@ export class PlayerControls {
             emitter4.setAngle(240, 300);                                                                // Rotate it for randomness, it looks cool, different particle burst every jump
             emitter4.setPosition(p.body.x+8, p.body.y+16);
             this.jumpEmitter1.explode(20);
+
             this.JUMPCOUNT += 1;                                                                        // Increment counters to make sure jumps are finite, disable the drag for constant momentum.
             this.justBurst = true;
+
+            this.hasDoubleJump = false; // Use up the double jump power-up
+            console.log("Double jump consumed!");
+            
             this.disableDrag = true;
         }
     // Play the jump animation if not touching the ground

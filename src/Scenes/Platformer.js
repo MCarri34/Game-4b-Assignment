@@ -25,6 +25,15 @@ export class Platformer extends Phaser.Scene {
         this.testLayer.setCollisionByProperty({ collides: true });
         this.animatedTiles.init(this.map);
 
+        // Power-up Animation
+        this.anims.create({
+            key: 'doubleJumpPowerUp',
+            frames: this.anims.generateFrameNumbers('onebit_tiles', { frames: [62, 82] }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+
         // Create Cursors 
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -52,13 +61,47 @@ export class Platformer extends Phaser.Scene {
         
         // Camera Instatiation
         this.cameras.main.setZoom(2);                                               // Basic camera for the play for now
-        this.cameras.main.startFollow(this.player);
+        this.cameras.main.startFollow(this.player, true, 0, 1);                     // Follow the player with the camera (x-axis not)
 
         // Enemy Instantiation
         this.enemies = [
-            new EnemyControls(this, 600, 1400, 'onebit_tiles', this.testLayer),
+            new EnemyControls(this, 100, 1200, 'onebit_tiles', this.testLayer), //Spawn Enemy 1
+            new EnemyControls(this, 275, 1150, 'onebit_tiles', this.testLayer), //Spawn Enemy 2
+            new EnemyControls(this, 300, 1100, 'onebit_tiles', this.testLayer), //Spawn Enemy 3
+            new EnemyControls(this, 300, 800, 'onebit_tiles', this.testLayer),  //Spawn Enemy 4
+            new EnemyControls(this, 150, 800, 'onebit_tiles', this.testLayer),  //Spawn Enemy 5
+            new EnemyControls(this, 600, 450, 'onebit_tiles', this.testLayer),  //Spawn Enemy 6
+
         ]
         
+        // Create double jump power-up 
+        this.doubleJumpPowerUps = this.physics.add.staticGroup();
+
+        // Define positions for each power-up
+        const powerUpPositions = [
+            { x: 101.2, y: 624.8 },
+            { x: 444.6, y: 512.8 },
+            { x: 87.3, y: 407 },
+        ];
+
+        powerUpPositions.forEach(pos => {
+            const powerUp = this.doubleJumpPowerUps.create(pos.x, pos.y, 'onebit_tiles', 62);
+            powerUp.anims.play('doubleJumpPowerUp');
+            powerUp.setSize(16, 16);
+            powerUp.setOffset(0, 0);
+            powerUp.setDepth(10);
+            powerUp.refreshBody();  // Important for static bodies
+        });
+
+
+        // Handle player collecting the double jump power-up
+        this.physics.add.overlap(this.player, this.doubleJumpPowerUps, (_, powerUp) => {
+            console.log('Double Jump Power-Up Collected!');
+            this.playerControls.hasDoubleJump = true;
+            powerUp.destroy();
+        }, null, this)
+
+
         // Interactable Object Instantiation
         const interactableObjects = this.map.getObjectLayer("Interactables").objects;
         this.pads = this.physics.add.staticGroup();
