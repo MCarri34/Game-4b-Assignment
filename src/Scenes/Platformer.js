@@ -82,6 +82,7 @@ export class Platformer extends Phaser.Scene {
             { x: 101.2, y: 624.8 },
             { x: 444.6, y: 512.8 },
             { x: 87.3, y: 407 },
+            { x: 163.3, y: 486.3 },
         ];
 
         powerUpPositions.forEach(pos => {
