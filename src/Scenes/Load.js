@@ -46,7 +46,6 @@ export class Load extends Phaser.Scene {
             repeat: -1      
         });
          this.scene.start("platformerScene");
-         console.log("woop");
     }
 
     update() {
