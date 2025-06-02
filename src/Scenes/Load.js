@@ -19,7 +19,19 @@ export class Load extends Phaser.Scene {
 
         // Load tilemap information
         this.load.image("tilemap_tiles", "monochrome_tilemap_transparent_packed.png");                         
-        this.load.tilemapTiledJSON("Level", "Level.tmj");   
+        this.load.tilemapTiledJSON("Level", "Level.tmj");
+        
+        // Load sound effects
+        this.load.audio('jump', 'jump.mp3');
+        this.load.audio('walljump', 'walljump.mp3');
+        this.load.audio('dying', 'dying.mp3');
+        this.load.audio('enemykilled', 'enemykilled.mp3');
+        this.load.audio('doublejump', 'doublejump.mp3');
+        this.load.audio('coin', 'coin.mp3');
+        this.load.audio('bouncepad', 'bouncepad.mp3');
+        this.load.audio('powerup', 'powerup.mp3');
+        this.load.audio('move', 'walking.mp3');
+        this.load.audio('victory', 'victory.mp3');
     }
 
     create() {

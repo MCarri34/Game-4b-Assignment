@@ -78,6 +78,11 @@ export class PlayerControls {
         return this.player;
     }
 
+    // Set sound refrences from Platformer.js
+    setSounds(sfx){
+        this.sfx = sfx;                                                                               // Set sound effects for player controls
+    }
+
     // Pre-Existing fadeout function for any non-particle emitting particle animations. Also might be used for player death or enemy death.
     fadeOut = (particle, duration, float) => {
         this.scene.tweens.add({
@@ -96,6 +101,9 @@ export class PlayerControls {
     // Update Function
     update() {
         const p = this.player;
+        if (!p.body.blocked.down && this.sfx?.move?.isPlaying && !this.isWallSliding) {                 // If player is not touching the ground and is not wall sliding, stop the walking sound effect
+        this.sfx.move.stop();
+        }
         const emitter1 = this.walkingEmitter1;
         const emitter2 = this.walkingEmitter2;
         const emitter3 = this.wallSlideEmitter1;
@@ -106,6 +114,9 @@ export class PlayerControls {
     // Wall Contact Tracking
         if (!p.body.blocked.down && this.scene.isTouchingWall) {
             this.isWallSliding = true;                                                                  // If the player is not touching the ground and is currently touching a wall, set wall sliding tracker to true
+            if(this.sfx?.move && !this.sfx.move.isPlaying){
+                this.sfx.move.stop;
+            }
             if (p.body.blocked.left || p.body.touching.left || p.body.wasTouching.left) {               // track what side of the player character is in contact with the wall, this is used for the actual jump which boosts the player by this.burst away from the wall.
                 this.lastWallSide = 'left';
             } else if (p.body.blocked.right || p.body.touching.right || p.body.wasTouching.right) {
@@ -134,6 +145,9 @@ export class PlayerControls {
     // Regular Player movement [Left, Right]
         if (p.body.blocked.down) {
             if (this.cursors.left.isDown) {
+                if(this.sfx?.move && !this.sfx.move.isPlaying){
+                    this.sfx.move.play({ loop: true });                                                              // Play walking sound effect
+                }
                 if (p.body.velocity.x > 0) {
                     p.setVelocityX(0);
                 }
@@ -146,6 +160,9 @@ export class PlayerControls {
                     p.setVelocityX(-250);
                 }
             } else if (this.cursors.right.isDown) {
+                if(this.sfx?.move && !this.sfx.move.isPlaying){
+                    this.sfx.move.play({ loop: true });                                                              // Play walking sound effect
+                }
                 if (p.body.velocity.x < 0) {
                     p.setVelocityX(0);
                 }
@@ -161,6 +178,9 @@ export class PlayerControls {
                 emitter1.stop();                                                                        // stop walking particles when not moving or in the air
                 emitter2.stop();
                 p.setAccelerationX(0);
+                if (this.sfx?.move && this.sfx.move.isPlaying) {
+                    this.sfx.move.stop();                                                                // Stop walking sound effect when not moving
+                }
                 p.anims.play('idle', true);
             }
         this.scene.isTouchingWall = false;              
@@ -172,6 +192,7 @@ export class PlayerControls {
     // Player Jumping
         if (p.body.blocked.down && Phaser.Input.Keyboard.JustDown(this.spaceKey) && this.JUMPCOUNT < 1) {
             p.setVelocityY(this.JUMP_VELOCITY);                                                         // First spacebar press, boost player up by JUMP_VELOCITY
+            if (this.sfx?.jump) this.sfx.jump.play();                                                   // Play jump sound effect
             this.JUMPCOUNT += 1;
             emitter4.setAngle(240, 300);                                                                // Rotate it for randomness, it looks cool, different particle burst every jump
             emitter4.setPosition(p.body.x+8, p.body.y+16);
@@ -180,6 +201,7 @@ export class PlayerControls {
     // Player Wall Jumping
         if (this.isWallSliding && Phaser.Input.Keyboard.JustDown(this.spaceKey)) {
             p.setVelocityY(this.JUMP_VELOCITY);                                                         // On spacebar press when sliding, boost player up by JUMP_VELOCITY
+            if (this.sfx?.walljump) this.sfx.walljump.play();                                           // Play wall jump sound effect
             if (this.lastWallSide === 'left') {
                 p.setVelocityX(this.burst);
                 emitter4.setAngle(240, 300);                                                            // Rotate it for randomness, it looks cool, different particle burst every jump
@@ -207,6 +229,7 @@ export class PlayerControls {
     // Player Double Jump
         if (this.hasDoubleJump && !p.body.blocked.down && Phaser.Input.Keyboard.JustDown(this.spaceKey) && this.JUMPCOUNT === 1) {
             p.setVelocityY(this.JUMP_VELOCITY);                                                         // On second spacebar press (when not touching a wall) boost the player up by JUMP_VELOCITY again
+            if (this.sfx?.doublejump) this.sfx.doublejump.play();                                       // Play double jump sound effect
             if (!this.justBurst) {
                 if (this.cursors.left.isDown) {                                                         // If player presses a cursor button LEFT or RIGHT before this, send them in that direction, else the movement will stay constant from before the double jump.
                     p.setVelocityX(p.body.velocity.x);
@@ -253,8 +276,4 @@ export class PlayerControls {
         }
     }
 }
-    
-
-
-
-
+   

@@ -18,6 +18,7 @@ export class Platformer extends Phaser.Scene {
         this.started = false;
         this.ended = false;
         this.paused = false;
+        this.victorySoundPlayed = false;
         this.startTime = 0;
         this.finalTime = 0;
         this.deathCount = 0;
@@ -85,6 +86,21 @@ export class Platformer extends Phaser.Scene {
         this.isTouchingWall = false;                                                // Variable for wall jump
         this.dead = false;
         this.player.setVisible(false);
+
+        this.sfx ={    // Adding Sound Effects
+            jump: this.sound.add('jump'),
+            walljump: this.sound.add('walljump'),
+            dying: this.sound.add('dying'),
+            enemykilled: this.sound.add('enemykilled'),
+            doublejump: this.sound.add('doublejump'),
+            coin: this.sound.add('coin'),
+            bouncepad: this.sound.add('bouncepad'),
+            powerup: this.sound.add('powerup'),
+            move: this.sound.add('move'),
+            victory: this.sound.add('victory')
+        }
+        this.playerControls.setSounds(this.sfx);                                         // Set player sounds
+
         // Player wall Jump Handling
         this.physics.add.collider(this.player, this.testLayer, (player, tile) => {
             this.handleDeadlyTiles(player, tile);
@@ -165,6 +181,7 @@ export class Platformer extends Phaser.Scene {
 
     // Callback for bouncepads
     bounce(player, pad){
+        if (this.sfx?.bouncepad) this.sfx.bouncepad.play();                                 // Play bounce pad sound
         player.setVelocityY(pad.Boost);
     }
     // Callback for player completion
@@ -172,6 +189,7 @@ export class Platformer extends Phaser.Scene {
         if(!this.ended){
         this.finalTime = (this.time.now - this.startTime) / 1000;                           // Handle the player 'speed run timer' data. Calculate time from started to finished.
         this.ended = true;                                                                  // Set game end flag
+        
         }
     }
     
@@ -208,6 +226,7 @@ export class Platformer extends Phaser.Scene {
     // Player Death Handling
     playerKill(){
         console.log("PLAYER DIED");
+        if (this.sfx?.dying) this.sfx.dying.play();                                             // Play death sound
         this.player.setVisible(false);
         this.dead = true;
         this.despawnEnemies();                                                                  // Reset enemies and power ups on player death to prevent softlocking
@@ -258,9 +277,11 @@ export class Platformer extends Phaser.Scene {
             if (player.body.velocity.y >= 0 && playerBottom <= enemyTop + 10) {                 // If touch enemy on top with downward momentum, kill enemy, play particles. Else, on contact kill the player
                 this.deathEmitter1.setPosition(this.player.x, this.player.y+16);
                 this.deathEmitter1.explode(50);
-                enemyObj.enemy.disableBody(true, true); 
+                enemyObj.enemy.disableBody(true, true);
+                if (this.sfx?.enemykilled) this.sfx.enemykilled.play();                         // Play enemy killed sound 
                 player.body.velocity.y = -200; 
             } else if(!this.dead){
+                if (this.sfx?.dying) this.sfx.dying.play();                                     // Play death sound
                 this.playerKill();
             }
         });
@@ -290,6 +311,7 @@ export class Platformer extends Phaser.Scene {
 
         this.physics.add.overlap(this.player, this.doubleJumpPowerUps, (_, powerUp) => {    // Handle power up collision handling
             this.playerControls.hasDoubleJump = true;
+            if (this.sfx?.powerup) this.sfx.powerup.play();                                 // Play power up sound
             powerUp.destroy();
             this.time.delayedCall(5000, () => {                                             // On delay, refresh all the power ups by despawning and spawning them (very fast), so they respawn every 5 seconds to reset softlocking
                 this.despawnPowerUps();
@@ -375,9 +397,16 @@ export class Platformer extends Phaser.Scene {
         });
             }
         } else if (this.ended){                                                                     // else if (the game has ended) Freeze the player, stop any possible particle emissions, and display the end text including final time and deaths. Allow player to restart on R press.
+            if (!this.victorySoundPlayed && this.sfx?.victory) {
+                this.sfx.victory.play();
+                this.victorySoundPlayed = true;
+            }                                                                                   // Play victory sound
             this.player.body.velocity.x = 0;
             this.player.body.acceleration.set(0);
             this.player.anims.play('idle');
+            if (this.sfx?.move && this.sfx.move.isPlaying) {
+                this.sfx.move.stop();
+            }                                                                                   // Stop the player walking sound if it is playing
             this.playerControls.walkingEmitter1.stop();
             this.playerControls.walkingEmitter2.stop();
             this.endText = this.add.bitmapText(20, 20, 'pixelfont', 'YOU HAVE REACHED THE TOP!', 15);
@@ -390,5 +419,3 @@ export class Platformer extends Phaser.Scene {
         }
     }
 }
-
-
