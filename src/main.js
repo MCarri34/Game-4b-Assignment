@@ -8,7 +8,7 @@ let config = {
     render: {
         pixelArt: true  
     },
-    backgroundColor: "#00000",           // black, maybe change if you want, probably won't.
+    backgroundColor: "#00000",           
     physics: {
         default: 'arcade',
         arcade: {
@@ -19,7 +19,7 @@ let config = {
             debug: true,
         }
     },
-    width: 950,
+    width: 950,                         // Screen size adjusted to the size of the level and screen frame
     height: 900,
     scene: [Load, Platformer]
 }

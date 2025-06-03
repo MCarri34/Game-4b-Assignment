@@ -35,7 +35,7 @@ export class Load extends Phaser.Scene {
     }
 
     create() {
-
+        // Animations
         this.anims.create({
             key: 'walk',
             frames: this.anims.generateFrameNumbers('onebit_tiles', { start: 281, end: 284 }),

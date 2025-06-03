@@ -61,7 +61,7 @@ export class PlayerControls {
             blendMode: Phaser.BlendModes.NORMAL
         });
         this.jumpEmitter1 = this.scene.add.particles(this.player.x, this.player.y, 'whitePixel', {
-            lifespan: { min: 200, max: 1000 },        
+            lifespan: { min: 200, max: 1000 },                                                          // Jump emitter for jumping, also used in Platformer.js for death particles (Particle count is just increased)
             speed: { min: 50, max: 1 },                    
             gravityY: 0,                            
             scale: { start: 2, end: 0 },             
@@ -80,22 +80,7 @@ export class PlayerControls {
 
     // Set sound refrences from Platformer.js
     setSounds(sfx){
-        this.sfx = sfx;                                                                               // Set sound effects for player controls
-    }
-
-    // Pre-Existing fadeout function for any non-particle emitting particle animations. Also might be used for player death or enemy death.
-    fadeOut = (particle, duration, float) => {
-        this.scene.tweens.add({
-            targets: particle,
-            alpha: 0,            
-            y: particle.y - float,  
-            duration: duration,       
-            ease: 'Linear',
-            onComplete: () => {
-                particle.destroy(); 
-            }
-        });
-
+        this.sfx = sfx;                                                                                 // Set sound effects for player controls
     }
 
     // Update Function
@@ -146,7 +131,7 @@ export class PlayerControls {
         if (p.body.blocked.down) {
             if (this.cursors.left.isDown) {
                 if(this.sfx?.move && !this.sfx.move.isPlaying){
-                    this.sfx.move.play({ loop: true });                                                              // Play walking sound effect
+                    this.sfx.move.play({ loop: true });                                                 // Play walking sound effect
                 }
                 if (p.body.velocity.x > 0) {
                     p.setVelocityX(0);
@@ -161,7 +146,7 @@ export class PlayerControls {
                 }
             } else if (this.cursors.right.isDown) {
                 if(this.sfx?.move && !this.sfx.move.isPlaying){
-                    this.sfx.move.play({ loop: true });                                                              // Play walking sound effect
+                    this.sfx.move.play({ loop: true });                                                 // Play walking sound effect
                 }
                 if (p.body.velocity.x < 0) {
                     p.setVelocityX(0);
@@ -179,7 +164,7 @@ export class PlayerControls {
                 emitter2.stop();
                 p.setAccelerationX(0);
                 if (this.sfx?.move && this.sfx.move.isPlaying) {
-                    this.sfx.move.stop();                                                                // Stop walking sound effect when not moving
+                    this.sfx.move.stop();                                                               // Stop walking sound effect when not moving
                 }
                 p.anims.play('idle', true);
             }
@@ -255,17 +240,16 @@ export class PlayerControls {
         }
     // Reset counters on contact with the ground for jumps.
         if (p.body.blocked.down) {
-            if (this.JUMPCOUNT === 2) {
-                p.setAngle(0);
+            if (this.JUMPCOUNT === 2) {                                                                 // Re-enable drag, reset jump count, and reset double jump flag if the player performed double jump and touching the floor
                 this.disableDrag = false;
                 this.JUMPCOUNT = 0;
                 this.justBurst = false;
             }
-            if (this.JUMPCOUNT !== 0 && !this.spaceKey.isDown) {
-                this.JUMPCOUNT = 0;
+            if (this.JUMPCOUNT !== 0 && !this.spaceKey.isDown) {                                        // if player jumped at all, reset jump flag the minute they touch the ground and let go of space
+                this.JUMPCOUNT = 0;                                                                     // both these conditions are necessary to keep the player from flying away
             }
         }
-        if (p.body.blocked.down) {
+        if (p.body.blocked.down) {                                                                      // drag handling
             if (!this.disableDrag) {
                 p.setDragX(this.DRAG);
             } else {

@@ -25,11 +25,11 @@ export class Platformer extends Phaser.Scene {
         this.pKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P);           // Player Inputs Other Than Movement
         this.rKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.R);
         this.sKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-        this.menuTextOne = this.add.bitmapText(200, 1342, 'pixelfont', 'CLIMB.EXE', 20);// Menu Texts
+        this.menuTextOne = this.add.bitmapText(200, 1342, 'pixelfont', 'CLIMB.EXE', 20);    // Menu Texts
         this.menuTextTwo = this.add.bitmapText(200, 1362, 'pixelfont', 'Credits To: Noah Billedo, Michael Carrillo, Kenney Assets\nClimb to the top!', 5);
         this.menuTextThree = this.add.bitmapText(200, 1375, 'pixelfont', 'PRESS S TO START', 10);
         this.startTexts = [this.menuTextOne, this.menuTextTwo, this.menuTextThree];
-        this.startTexts.forEach(textObj => {                                                // Fun little start menu tween
+        this.startTexts.forEach(textObj => {                                                // Fun little start menu tween, moves up and down
             this.tweens.add({
                 targets: textObj,
                 y: textObj.y - 5,        
@@ -42,36 +42,36 @@ export class Platformer extends Phaser.Scene {
 
 
         // Player spawnpoint
-        this.spawnpointX = 390;
+        this.spawnpointX = 390;                                                         
         this.spawnpointY = 1434;
 
-        // Create Layers, Animationsm, Emitters
+        // Create Layers, Animations
         this.map = this.make.tilemap({ key: "Level" });
         this.tileset = this.map.addTilesetImage("onebit_packed", "tilemap_tiles");
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.testLayer = this.map.createLayer("Test", this.tileset, 0, 0);
-        this.decorationLayer = this.map.createLayer("Decoration", this.tileset, 0,0);
-        this.subDecorationLayer = this.map.createLayer("SubDecoration", this.tileset, 0,0);
-        this.testLayer.setCollisionByProperty({ collides: true });
         this.animatedTiles.init(this.map);
         this.physics.world.TILE_BIAS = 15;
-        this.anims.create({
+        this.platformLayer = this.map.createLayer("Platforms", this.tileset, 0, 0);                 // Create platform layer and decoration layers
+        this.decorationLayer = this.map.createLayer("Decoration", this.tileset, 0,0);
+        this.subDecorationLayer = this.map.createLayer("SubDecoration", this.tileset, 0,0);
+        this.platformLayer.setCollisionByProperty({ collides: true });                         // Only do collisions with the platform layer
+        this.anims.create({                                                                // Player double jump power up tile animation
             key: 'doubleJumpPowerUp',
-            frames: this.anims.generateFrameNumbers('onebit_tiles', { frames: [62, 82] }),
+            frames: this.anims.generateFrameNumbers('onebit_tiles', { frames: [62, 82] }), // Makes the power ups pulse with a two frame animation
             frameRate: 10,
             repeat: -1
         });
 
-        // Create Cursors 
+        // Create Cursors For Player Input
         this.cursors = this.input.keyboard.createCursorKeys();
 
         // Dialogue Text Holders
-        this.box = this.add.graphics()
+        this.box = this.add.graphics()                                                     // Text Box
             .fillStyle(0x000000, 0.7)
             .lineStyle(4, 0x80EF80, 1)
             .setScrollFactor(0)
             .setVisible(false);
-        this.dialogueBox = this.add.bitmapText(270, 600, 'pixelfont', '', 10)
+        this.dialogueBox = this.add.bitmapText(270, 600, 'pixelfont', '', 10)              // Text Box Text Content/Dialogue 
             .setScrollFactor(0)
             .setVisible(false)
             .setDepth(999)
@@ -79,15 +79,14 @@ export class Platformer extends Phaser.Scene {
         // Player Instantiation
         this.playerControls = new PlayerControls(this, this.cursors);
         this.player = this.playerControls.getSprite();
-        this.player.setVisible(true);
-        this.player.setPosition(this.spawnpointX, this.spawnpointY);                // Spawn player at stored spawn position
-        this.player.body.setSize(16, 16);                                           // Adjust hitbox
+        this.player.setVisible(false);                                               // Player not visible until game start
+        this.player.setPosition(this.spawnpointX, this.spawnpointY);                // Spawn player at stored spawn position 
+        this.player.body.setSize(16, 16);                                           // Adjust hitbox to fit the player tightly
         this.player.body.setOffset(0, 1);
         this.isTouchingWall = false;                                                // Variable for wall jump
-        this.dead = false;
-        this.player.setVisible(false);
-
-        this.sfx ={    // Adding Sound Effects
+        this.dead = false;                                                          // Variable to prevent death callback being called multiple times                                            
+        // SFX
+        this.sfx ={   
             jump: this.sound.add('jump'),
             walljump: this.sound.add('walljump'),
             dying: this.sound.add('dying'),
@@ -99,16 +98,15 @@ export class Platformer extends Phaser.Scene {
             move: this.sound.add('move'),
             victory: this.sound.add('victory')
         }
-        this.playerControls.setSounds(this.sfx);                                         // Set player sounds
-
+        this.playerControls.setSounds(this.sfx);                                   // Set player sounds
         // Player wall Jump Handling
-        this.physics.add.collider(this.player, this.testLayer, (player, tile) => {
-            this.handleDeadlyTiles(player, tile);
+        this.physics.add.collider(this.player, this.platformLayer, (player, tile) => {      
+            this.handleDeadlyTiles(player, tile);                                 // If player in collision with a solid tile in platform layer, 
 
             const body = player.body;
             if (
-                body.blocked.left || body.blocked.right ||
-                body.touching.left || body.touching.right ||
+                body.blocked.left || body.blocked.right ||                        // If tile contacting player right or left side, set isTouchingWall to true, allowing for the player
+                body.touching.left || body.touching.right ||                      // to go into the wallslide state in player.js and perform wall jumps; else false.
                 body.embedded
             ) {
                 this.isTouchingWall = true;
@@ -127,35 +125,35 @@ export class Platformer extends Phaser.Scene {
             alpha: { start: 1, end: 0 },
             tint: 0x999999,
             blendMode: Phaser.BlendModes.NORMAL
-        });
+        });                                                                       // Repurposed jumpEmitter from player.js for death particles. Moved it here since this file was having trouble accessing the emitter in player.js.
         
         // Camera Instatiation
         this.cameras.main.setZoom(2);
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.cameras.main.startFollow(this.player, false, 0, 1);
+        this.cameras.main.startFollow(this.player, false, 0, 1);                  // Set camera only to scroll up and down, not left and right
 
         // Interactable Object Instantiation
         const interactableObjects = this.map.getObjectLayer("Interactables").objects;
-        this.pads = this.physics.add.staticGroup();
-        this.signs = this.physics.add.staticGroup();
+        this.pads = this.physics.add.staticGroup();                               // Create static group for each type of interactable object for different callbacks
+        this.signs = this.physics.add.staticGroup();                              // after getting the objects from the interactables object layer in tiled
         this.end = this.physics.add.staticGroup();
         interactableObjects.forEach(obj => {
-            const hitbox = this.physics.add.staticImage(obj.x , obj.y , 'onebit_tiles')        // Create hitbox object for object layer items
-                .setOrigin(0, 1)    
+            const hitbox = this.physics.add.staticImage(obj.x , obj.y , 'onebit_tiles')      
+                .setOrigin(0, 1)                                                  // Create the hitbox and set the visibility. 
                 .refreshBody()     
                 .setDepth(5);
-            if (obj.gid) {                                                                     // If object uses sprite, use it-- else make the hitbox invisible
+            if (obj.gid) {                                                        
                 hitbox.setVisible(true);
                 hitbox.setFrame(obj.gid - 1);
             } else {
                 hitbox.setVisible(false);
             }
-            if (obj.properties) {
+            if (obj.properties) {                                                 // For each object hitbox, retrieve its properties such as Type and Text and store it.
                 obj.properties.forEach(p => {
                     hitbox[p.name] = p.value;
                 });
             }
-            if(hitbox.Type === 'Pad'){
+            if(hitbox.Type === 'Pad'){                                            // Add hitbox to respective static groups based on their .Type property
                 this.pads.add(hitbox);
             }
             if(hitbox.Type === 'Sign'){
@@ -182,20 +180,19 @@ export class Platformer extends Phaser.Scene {
     // Callback for bouncepads
     bounce(player, pad){
         if (this.sfx?.bouncepad) this.sfx.bouncepad.play();                                 // Play bounce pad sound
-        player.setVelocityY(pad.Boost);
+        player.setVelocityY(pad.Boost);                                                     // Launch player upwards based on specific bouncepad objects .Boost property in tiled
     }
     // Callback for player completion
     complete(player, end){
-        if(!this.ended){
-        this.finalTime = (this.time.now - this.startTime) / 1000;                           // Handle the player 'speed run timer' data. Calculate time from started to finished.
-        this.ended = true;                                                                  // Set game end flag
-        
+        if(!this.ended){                                                                        // Check if game ended already to make sure this doesn't run infinitely
+            this.finalTime = (this.time.now - this.startTime) / 1000;                           // Handle the player 'speed run timer' data. Calculate time from started to finished.
+            this.ended = true;                                                                  // Set game end flag for update()
         }
     }
     
     // Called when player is in overlap with a sign/text object from the objectlayer, shows the text
     showDialogueText(player, sign) {                                                                                          
-            this.dialogueBox.setText(sign.Text);
+            this.dialogueBox.setText(sign.Text);                                                // Sets the dialogueBox text value to collided sign objects text value, updates the border box and sets visible to true.
             this.dialogueBox.setVisible(true);            
             this.box.setVisible(true);
             this.dialogueBorderUpdate();
@@ -210,7 +207,7 @@ export class Platformer extends Phaser.Scene {
         const boxWidth = textWidth + padding * 2;                                               // get box dimensions based off text
         const boxHeight = textHeight + padding * 2;
         this.box.clear();                                                                       // destroy the previous box
-        this.box.fillStyle(0x000000, 0.7);                                                      // below sets the new box
+        this.box.fillStyle(0x000000, 1);                                                        // below sets the new box
         this.box.fillRect(this.dialogueBox.x - padding, this.dialogueBox.y - padding, boxWidth, boxHeight);
         this.box.lineStyle(2, 0xffffff, 1);
         this.box.strokeRect(this.dialogueBox.x - padding, this.dialogueBox.y - padding, boxWidth, boxHeight);
@@ -218,24 +215,24 @@ export class Platformer extends Phaser.Scene {
 
     // Deadly Tile Handling
     handleDeadlyTiles(player, tile) {
-    const isDeadly = (tile.properties && tile.properties.deadly) || tile.deadly;
-    if (isDeadly && !this.dead) {                             
+    const isDeadly = (tile.properties && tile.properties.deadly) || tile.deadly;                // If tile has properties and the .deadly property is true
+    if (isDeadly && !this.dead) {                                                               // if player isn't currently dying, call the playerKill function
         this.playerKill();
     }
 }
     // Player Death Handling
     playerKill(){
-        console.log("PLAYER DIED");
+        console.log("PLAYER DIED");                                                         
         if (this.sfx?.dying) this.sfx.dying.play();                                             // Play death sound
-        this.player.setVisible(false);
+        this.player.setVisible(false);                                                          // Set player to invisible to simulate death- player movement disabled in update()
         this.dead = true;
-        this.despawnEnemies();                                                                  // Reset enemies and power ups on player death to prevent softlocking
+        this.despawnEnemies();                                                                  // Reset enemies and power ups on player death to prevent softlocking in later levels
         this.despawnPowerUps();                                                         
         this.deathCount++;                                                                      // Increment death count for end state
         this.playerControls.hasDoubleJump = false;                                              // Reset double jump so player cannot carry it from death
         this.deathEmitter1.setPosition(this.player.x, this.player.y);                           // Death Particle burst
-        this.deathEmitter1.explode(50);
-        this.time.delayedCall(1000, () => {                                                     // Delay reset to bring back enemies, and reset death states.
+        this.deathEmitter1.explode(50);                                                     
+        this.time.delayedCall(1000, () => {                                                     // Delay reset to bring back enemies, and reset death states/make player visible and move it to spawn location.
             this.spawnEnemies();
             this.spawnPowerUps();
             this.dead = false;
@@ -246,8 +243,8 @@ export class Platformer extends Phaser.Scene {
     }
 
     // One Way Pass for collidables
-    oneWayPlatformCollide(player, tile) {
-        if (!tile.properties.solid) {
+    oneWayPlatformCollide(player, tile) {                                                       // If player collides with non-solid platform with upwards momentum, let them through.
+        if (!tile.properties.solid) {                                                           // else actually trigger the physics collision
             return player.body.velocity.y >= 1;
         } else {
             return true;
@@ -256,21 +253,19 @@ export class Platformer extends Phaser.Scene {
 
     // Enemy Spawn Function
     spawnEnemies(){
-        // Enemy Instantiation
         const enemySpawns = [[100, 1200], [275, 1150], [300, 1100], [300, 800], [150, 800], [700, 450]];
-        this.enemies = [];
+        this.enemies = [];                                                                      // Enemy spawn locations and enemy array instantiation
 
-        enemySpawns.forEach(pos => {                                                            // Spawn enemies
+        enemySpawns.forEach(pos => {                                                            // For each specified position, spawn an EnemyControls enemy and push it to the array
             const [x, y] = pos;
-            const enemy = new EnemyControls(this, x, y, 'onebit_tiles', this.testLayer);
-            enemy.isDeadly = true;
+            const enemy = new EnemyControls(this, x, y, 'onebit_tiles', this.platformLayer);
             this.enemies.push(enemy);
         });
 
-            this.enemies.forEach(enemyObj => {                                                  
+            this.enemies.forEach(enemyObj => {                                                  // For reach enemy, fetch the psrite and add player enemy collision handling            
             const enemy = enemyObj.getSprite();
 
-            this.physics.add.collider(this.player, enemy, (player, enemy) => {                  // Handle player-enemy collisions
+            this.physics.add.collider(this.player, enemy, (player, enemy) => {                  
             const playerBottom = player.body.y + player.body.height;
             const enemyTop = enemy.body.y;
 
@@ -292,7 +287,7 @@ export class Platformer extends Phaser.Scene {
     spawnPowerUps(){ 
         this.doubleJumpPowerUps = this.physics.add.staticGroup();                               // Spawn the power ups
 
-        const powerUpPositions = [
+        const powerUpPositions = [                                                              // Similar to enemy, specify positions and create a power up for each position in position array
             { x: 101.2, y: 624.8 },
             { x: 444.6, y: 512.8 },
             { x: 87.3, y: 407 },
@@ -309,11 +304,11 @@ export class Platformer extends Phaser.Scene {
             powerUp.refreshBody();  
         });
 
-        this.physics.add.overlap(this.player, this.doubleJumpPowerUps, (_, powerUp) => {    // Handle power up collision handling
+        this.physics.add.overlap(this.player, this.doubleJumpPowerUps, (_, powerUp) => {        // Handle power up collision handling
             this.playerControls.hasDoubleJump = true;
-            if (this.sfx?.powerup) this.sfx.powerup.play();                                 // Play power up sound
+            if (this.sfx?.powerup) this.sfx.powerup.play();                                     // Play power up sound
             powerUp.destroy();
-            this.time.delayedCall(5000, () => {                                             // On delay, refresh all the power ups by despawning and spawning them (very fast), so they respawn every 5 seconds to reset softlocking
+            this.time.delayedCall(5000, () => {                                                 // On delay, refresh all the power ups by despawning and spawning them (very fast), so they respawn every 5 seconds to reset softlocking
                 this.despawnPowerUps();
                 this.spawnPowerUps();
         }, [], this)
@@ -322,8 +317,7 @@ export class Platformer extends Phaser.Scene {
 
     // Enemy Despawn Function
     despawnEnemies() {
-        // Despawn enemies
-        this.enemies.forEach(enemyObj => {
+        this.enemies.forEach(enemyObj => {                                                      // Iterate through enemies array and destroy each one
             if (enemyObj && enemyObj.enemy) {
                 enemyObj.enemy.destroy(); 
             }
@@ -333,8 +327,7 @@ export class Platformer extends Phaser.Scene {
 
     // Power up Despawn function
     despawnPowerUps(){
-        // Despawn power-ups
-        if (this.doubleJumpPowerUps) {
+        if (this.doubleJumpPowerUps) {                                                          // Iterate through power ups array and destroy each one
             this.doubleJumpPowerUps.getChildren().forEach(powerUp => {
                 powerUp.destroy(); 
             });
@@ -344,24 +337,24 @@ export class Platformer extends Phaser.Scene {
 
     // Update Function
     update() {
-        if(this.started && !this.ended){                                                            // If game started
+        if(this.started && !this.ended){                                                        // If game started
         this.isTouchingSign = false;                          
 
         this.physics.world.overlap(this.player, this.signs, this.showDialogueText, null, this);
 
-        if (!this.isTouchingSign) {                                                                 // Sign collision handling, if overlapping a sign make the text visible, else make it not visible
+        if (!this.isTouchingSign) {                                                             // Sign collision handling, if overlapping a sign make the text visible, else make it not visible
             this.dialogueBox.setVisible(false);
             this.box.setVisible(false);
         }
 
-        if(!this.dead && !this.paused){                                                             // if not dead and not paused, update player controls and enemy instances (Player movement toggle)
+        if(!this.dead && !this.paused){                                                         // if not dead and not paused, update player controls and enemy instances (Player movement toggle)
             this.playerControls.update();
             this.enemies.forEach(enemy => {
             enemy.update();
         });
         }
 
-        if(this.paused){                                                                            // If paused, display the menu and freeze everything. Allow the player to restart the level on R press
+        if(this.paused){                                                                        // If paused, display the menu and freeze everything. Allow the player to restart the level on R press
             this.dialogueBox.setText('PAUSE MENU\nPRESS R: RESTART\nPRESS P: UNPAUSE');
             this.dialogueBox.setVisible(true);
             this.dialogueBorderUpdate();
@@ -372,7 +365,7 @@ export class Platformer extends Phaser.Scene {
             this.player.body.velocity.y = -25;
             this.player.body.velocity.x = 0;
             this.player.body.acceleration.set(0);
-            if(Phaser.Input.Keyboard.JustDown(this.pKey)){
+            if(Phaser.Input.Keyboard.JustDown(this.pKey)){                                      // if p pressed again while paused, set enemies back into motion and reset pause flag to take update() out of pause loop
                 this.paused = false;
                 this.enemies.forEach(enemy => {
                 enemy.enemy.body.setVelocity(100, 0);
@@ -381,22 +374,22 @@ export class Platformer extends Phaser.Scene {
             if(Phaser.Input.Keyboard.JustDown(this.rKey)){
                 this.scene.restart();
             }
-        } else {                                                                                    // else (if the game is not paused) pause the game.
+        } else {                                                                                // else (if the game is not paused) pause the game.
             if(Phaser.Input.Keyboard.JustDown(this.pKey)){
             this.paused = true;
 
                 }
             }
-        } else if(!this.started){                                                                   // else if (the game isn't started) IF the player presses the S key, start the game and destroy all of the menu text
+        } else if(!this.started){                                                               // else if (the game isn't started) IF the player presses the S key, start the game and destroy all of the menu text
             if(Phaser.Input.Keyboard.JustDown(this.sKey)){
-                this.started = true;                                                                // start tracking time for time to complete stat at the end of the game
+                this.started = true;                                                            // start tracking time for time to complete stat at the end of the game
                 this.startTime = this.time.now
                 this.player.setVisible(true);
         this.startTexts.forEach(textObj => {
             textObj.destroy();
         });
             }
-        } else if (this.ended){                                                                     // else if (the game has ended) Freeze the player, stop any possible particle emissions, and display the end text including final time and deaths. Allow player to restart on R press.
+        } else if (this.ended){                                                                 // else if (the game has ended) Freeze the player, stop any possible particle emissions, and display the end text including final time and deaths. Allow player to restart on R press.
             if (!this.victorySoundPlayed && this.sfx?.victory) {
                 this.sfx.victory.play();
                 this.victorySoundPlayed = true;
