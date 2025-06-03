@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="5" nextobjectid="17">
+<map version="1.10" tiledversion="1.11.2" orientation="orthogonal" renderorder="right-down" width="30" height="100" tilewidth="16" tileheight="16" infinite="0" nextlayerid="6" nextobjectid="121">
  <editorsettings>
-  <export target="Level.tmj" format="json"/>
+  <export format="json"/>
  </editorsettings>
  <tileset firstgid="1" name="onebit_packed" tilewidth="16" tileheight="16" tilecount="400" columns="20">
   <image source="monochrome_tilemap_transparent_packed.png" width="320" height="320"/>
+  <tile id="2">
+   <animation>
+    <frame tileid="2" duration="600"/>
+    <frame tileid="1" duration="600"/>
+   </animation>
+  </tile>
   <tile id="18">
    <animation>
     <frame tileid="18" duration="500"/>
@@ -696,7 +702,7 @@
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
- <layer id="1" name="Test" width="30" height="100">
+ <layer id="1" name="Platforms" width="30" height="100">
   <data encoding="csv">
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
@@ -959,4 +965,91 @@ YOU MIGHT NEED MOMENTUM HERE.</property>
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 </data>
  </layer>
+ <objectgroup id="5" name="Coins">
+  <object id="17" name="Coin" gid="3" x="96" y="1472" width="16" height="16"/>
+  <object id="18" name="Coin" gid="3" x="112" y="1472" width="16" height="16"/>
+  <object id="19" name="Coin" gid="3" x="128" y="1472" width="16" height="16"/>
+  <object id="20" name="Coin" gid="3" x="144" y="1472" width="16" height="16"/>
+  <object id="21" name="Coin" gid="3" x="64" y="1472" width="16" height="16"/>
+  <object id="22" name="Coin" gid="3" x="224" y="1520" width="16" height="16"/>
+  <object id="23" name="Coin" gid="3" x="48" y="1472" width="16" height="16"/>
+  <object id="24" name="Coin" gid="3" x="16" y="1408" width="16" height="16"/>
+  <object id="25" name="Coin" gid="3" x="16" y="1424" width="16" height="16"/>
+  <object id="26" name="Coin" gid="3" x="16" y="1440" width="16" height="16"/>
+  <object id="27" name="Coin" gid="3" x="16" y="1456" width="16" height="16"/>
+  <object id="28" name="Coin" gid="3" x="16" y="1392" width="16" height="16"/>
+  <object id="29" name="Coin" gid="3" x="48" y="1391.88" width="16" height="16"/>
+  <object id="30" name="Coin" gid="3" x="47.75" y="1407.63" width="16" height="16"/>
+  <object id="34" name="Coin" gid="3" x="96" y="1360" width="16" height="16"/>
+  <object id="36" name="Coin" gid="3" x="80" y="1360" width="16" height="16"/>
+  <object id="37" name="Coin" gid="3" x="48" y="1279.5" width="16" height="16"/>
+  <object id="38" name="Coin" gid="3" x="64" y="1279.5" width="16" height="16"/>
+  <object id="39" name="Coin" gid="3" x="80" y="1248" width="16" height="16"/>
+  <object id="40" name="Coin" gid="3" x="96" y="1248" width="16" height="16"/>
+  <object id="41" name="Coin" gid="3" x="112" y="1248" width="16" height="16"/>
+  <object id="42" name="Coin" gid="3" x="128" y="1248" width="16" height="16"/>
+  <object id="43" name="Coin" gid="3" x="352" y="1200" width="16" height="16"/>
+  <object id="44" name="Coin" gid="3" x="336.182" y="1200" width="16" height="16"/>
+  <object id="45" name="Coin" gid="3" x="448.182" y="1152" width="16" height="16"/>
+  <object id="46" name="Coin" gid="3" x="448" y="1136" width="16" height="16"/>
+  <object id="47" name="Coin" gid="3" x="448" y="1120" width="16" height="16"/>
+  <object id="48" name="Coin" gid="3" x="448" y="1104" width="16" height="16"/>
+  <object id="49" name="Coin" gid="3" x="448" y="1088" width="16" height="16"/>
+  <object id="50" name="Coin" gid="3" x="448" y="1072" width="16" height="16"/>
+  <object id="51" name="Coin" gid="3" x="384" y="1120" width="16" height="16"/>
+  <object id="52" name="Coin" gid="3" x="384" y="1104" width="16" height="16"/>
+  <object id="53" name="Coin" gid="3" x="384" y="1088" width="16" height="16"/>
+  <object id="54" name="Coin" gid="3" x="384" y="1071" width="16" height="16"/>
+  <object id="56" name="Coin" gid="3" x="144" y="848" width="16" height="16"/>
+  <object id="57" name="Coin" gid="3" x="160" y="848" width="16" height="16"/>
+  <object id="58" name="Coin" gid="3" x="176" y="848" width="16" height="16"/>
+  <object id="59" name="Coin" gid="3" x="192" y="848" width="16" height="16"/>
+  <object id="60" name="Coin" gid="3" x="208" y="848" width="16" height="16"/>
+  <object id="64" name="Coin" gid="3" x="416" y="832" width="16" height="16"/>
+  <object id="65" name="Coin" gid="3" x="416" y="848" width="16" height="16"/>
+  <object id="66" name="Coin" gid="3" x="416" y="864" width="16" height="16"/>
+  <object id="67" name="Coin" gid="3" x="416" y="880" width="16" height="16"/>
+  <object id="68" name="Coin" gid="3" x="416" y="896" width="16" height="16"/>
+  <object id="73" name="Coin" gid="3" x="64" y="544" width="16" height="16"/>
+  <object id="74" name="Coin" gid="3" x="32" y="544" width="16" height="16"/>
+  <object id="75" name="Coin" gid="3" x="96" y="544" width="16" height="16"/>
+  <object id="76" name="Coin" gid="3" x="80" y="544" width="16" height="16"/>
+  <object id="77" name="Coin" gid="3" x="112" y="544" width="16" height="16"/>
+  <object id="78" name="Coin" gid="3" x="288" y="528" width="16" height="16"/>
+  <object id="79" name="Coin" gid="3" x="304" y="528" width="16" height="16"/>
+  <object id="80" name="Coin" gid="3" x="336" y="528" width="16" height="16"/>
+  <object id="81" name="Coin" gid="3" x="352" y="528" width="16" height="16"/>
+  <object id="83" name="Coin" gid="3" x="416" y="448" width="16" height="16"/>
+  <object id="84" name="Coin" gid="3" x="432" y="448" width="16" height="16"/>
+  <object id="85" name="Coin" gid="3" x="448" y="448" width="16" height="16"/>
+  <object id="86" name="Coin" gid="3" x="368" y="432" width="16" height="16"/>
+  <object id="87" name="Coin" gid="3" x="352" y="432" width="16" height="16"/>
+  <object id="88" name="Coin" gid="3" x="336" y="432" width="16" height="16"/>
+  <object id="89" name="Coin" gid="3" x="240" y="416" width="16" height="16"/>
+  <object id="90" name="Coin" gid="3" x="208" y="416" width="16" height="16"/>
+  <object id="91" name="Coin" gid="3" x="96" y="416" width="16" height="16"/>
+  <object id="92" name="Coin" gid="3" x="80" y="416" width="16" height="16"/>
+  <object id="93" name="Coin" gid="3" x="64" y="416" width="16" height="16"/>
+  <object id="94" name="Coin" gid="3" x="128" y="288" width="16" height="16"/>
+  <object id="95" name="Coin" gid="3" x="144" y="288" width="16" height="16"/>
+  <object id="96" name="Coin" gid="3" x="160" y="288" width="16" height="16"/>
+  <object id="97" name="Coin" gid="3" x="176" y="288" width="16" height="16"/>
+  <object id="98" name="Coin" gid="3" x="208" y="256" width="16" height="16"/>
+  <object id="99" name="Coin" gid="3" x="224" y="256" width="16" height="16"/>
+  <object id="100" name="Coin" gid="3" x="256" y="256" width="16" height="16"/>
+  <object id="101" name="Coin" gid="3" x="272" y="256" width="16" height="16"/>
+  <object id="102" name="Coin" gid="3" x="432" y="176" width="16" height="16"/>
+  <object id="103" name="Coin" gid="3" x="448" y="112" width="16" height="16"/>
+  <object id="104" name="Coin" gid="3" x="432" y="160" width="16" height="16"/>
+  <object id="105" name="Coin" gid="3" x="432" y="144" width="16" height="16"/>
+  <object id="106" name="Coin" gid="3" x="432" y="128" width="16" height="16"/>
+  <object id="107" name="Coin" gid="3" x="400" y="128" width="16" height="16"/>
+  <object id="108" name="Coin" gid="3" x="400" y="144" width="16" height="16"/>
+  <object id="109" name="Coin" gid="3" x="400" y="160" width="16" height="16"/>
+  <object id="110" name="Coin" gid="3" x="400" y="176" width="16" height="16"/>
+  <object id="111" name="Coin" gid="3" x="464" y="112" width="16" height="16"/>
+  <object id="112" name="Coin" gid="3" x="336" y="80" width="16" height="16"/>
+  <object id="113" name="Coin" gid="3" x="352" y="80" width="16" height="16"/>
+  <object id="114" name="Coin" gid="3" x="384" y="80" width="16" height="16"/>
+ </objectgroup>
 </map>

@@ -32,6 +32,7 @@ export class Load extends Phaser.Scene {
         this.load.audio('powerup', 'powerup.mp3');
         this.load.audio('move', 'walking.mp3');
         this.load.audio('victory', 'victory.mp3');
+        this.load.audio('checkpoint', 'checkpoint.mp3');
     }
 
     create() {
