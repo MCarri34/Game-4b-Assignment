@@ -60,15 +60,8 @@ export class Platformer extends Phaser.Scene {
         this.coins = this.physics.add.staticGroup();                                           // Create static group for coins     
         this.respawnedCoins = [];
         const coinObjects = this.map.getObjectLayer("Coins")?.objects;
-        if (coinObjects) {
-            coinObjects.forEach(obj => {
-            const tileGID = obj.gid - this.tileset.firstgid;
-            const coin = this.add.sprite(obj.x, obj.y - obj.height, 'onebit_tiles', tileGID);
-            coin.setOrigin(0, 0);
-            this.physics.add.existing(coin, true);                                              // true = static body
-            this.coins.add(coin);
-        });
-    }
+
+       // Animations for interactable objects
         this.anims.create({                                                                // Player double jump power up tile animation
             key: 'doubleJumpPowerUp',
             frames: this.anims.generateFrameNumbers('onebit_tiles', { frames: [62, 82] }), // Makes the power ups pulse with a two frame animation
@@ -89,6 +82,23 @@ export class Platformer extends Phaser.Scene {
             repeat: -1
         });
 
+        this.anims.create({
+            key: 'coin_spin',
+            frames: this.anims.generateFrameNumbers('onebit_tiles', { frames: [2, 1] }),
+            frameRate: 1000 / 600,                                                            // ~1.67 fps (600 ms delay)
+            repeat: -1
+        });
+
+        if (coinObjects) {
+            coinObjects.forEach(obj => {
+                const coin = this.add.sprite(obj.x, obj.y - obj.height, 'onebit_tiles', 2);
+                coin.anims.play('coin_spin');
+                coin.setOrigin(0, 0);
+                this.physics.add.existing(coin, true);                                              // true = static body
+                this.coins.add(coin);
+            });
+        }
+
         // Create Cursors For Player Input
         this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -108,9 +118,9 @@ export class Platformer extends Phaser.Scene {
         this.player = this.playerControls.getSprite();
         this.player.setVisible(false);                                              // Player not visible until game start
         this.player.setPosition(this.spawnpointX, this.spawnpointY);                // Spawn player at stored spawn position 
-        
         this.collectedCoinsSinceCheckpoint = [];                                    // Array to store coins collected since last checkpoint
         this.totalCoinsCollected = 0;                                               // Tracks coins that truly "count"
+        this.collectedValuesSinceCheckpoint = 0;                                    // Tracks how many were added since last checkpoint
         this.collectedValueSinceCheckpoint = 0;                                     // Tracks how many were added since last checkpoint
 
 
@@ -162,7 +172,7 @@ export class Platformer extends Phaser.Scene {
         this.coinObjectsCollected = new Set();                                      // store coin IDs so we don't respawn already "locked in" coins
 
         this.collectedCoinsSinceCheckpoint.forEach(coinPos => {                     // Restore collected coins after death 
-            const coin = this.coins.create(coinPos.x, coinPos.y, 'onebit_tiles', 2);
+            const coin = this.coins.create(coinPos.x, coinPos.y, 'onebit_tiles');
             coin.setOrigin(0, 1);
             this.physics.add.existing(coin);
         });
@@ -334,8 +344,9 @@ export class Platformer extends Phaser.Scene {
             this.collectedCoinsSinceCheckpoint.forEach(coinPos => {                             // Respawn coins collected since last checkpoint
                 const coinID = coinPos.id || `${coinPos.x},${coinPos.y}`;
                 if (!this.coinObjectsCollected.has(coinID)) {
-                    const coin = this.add.sprite(coinPos.x, coinPos.y, 'onebit_tiles', 2);
+                    const coin = this.add.sprite(coinPos.x, coinPos.y, 'onebit_tiles');
                     coin.setOrigin(0, 0);
+                    coin.anims.play('coin_spin');
                     this.physics.add.existing(coin, true);
                     this.coins.add(coin);
                     this.respawnedCoins.push(coin);                                             // Add respawned coins to the respawnedCoins array

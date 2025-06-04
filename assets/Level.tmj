@@ -705,7 +705,7 @@
                  "visible":true,
                  "width":16,
                  "x":48,
-                 "y":1391.875
+                 "y":1391.88
                 }, 
                 {
                  "gid":3,
@@ -717,7 +717,7 @@
                  "visible":true,
                  "width":16,
                  "x":47.75,
-                 "y":1407.625
+                 "y":1407.63
                 }, 
                 {
                  "gid":3,
@@ -836,7 +836,7 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":336.181818181818,
+                 "x":336.182,
                  "y":1200
                 }, 
                 {
@@ -848,7 +848,7 @@
                  "type":"",
                  "visible":true,
                  "width":16,
-                 "x":448.181818181818,
+                 "x":448.182,
                  "y":1152
                 }, 
                 {
@@ -1601,18 +1601,6 @@
                 {
                  "animation":[
                         {
-                         "duration":600,
-                         "tileid":2
-                        }, 
-                        {
-                         "duration":600,
-                         "tileid":1
-                        }],
-                 "id":2
-                }, 
-                {
-                 "animation":[
-                        {
                          "duration":500,
                          "tileid":18
                         }, 
@@ -1876,8 +1864,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":145,
                  "properties":[
@@ -1886,7 +1873,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":146,
                  "properties":[
@@ -2233,8 +2221,7 @@
                          "type":"bool",
                          "value":true
                         }]
-                },
-            
+                }, 
                 {
                  "id":257,
                  "properties":[
@@ -2248,7 +2235,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":258,
                  "properties":[
@@ -2606,8 +2594,7 @@
                          "tileid":308
                         }],
                  "id":348
-                },
-            
+                }, 
                 {
                  "id":354,
                  "properties":[
@@ -2621,7 +2608,8 @@
                          "type":"bool",
                          "value":true
                         }]
-                }, 
+                },
+            
                 {
                  "id":355,
                  "properties":[
