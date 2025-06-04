@@ -16,7 +16,7 @@ let config = {
                 x: 0,
                 y: 0
             },
-            debug: true,
+            debug: false,
         }
     },
     width: 950,                         // Screen size adjusted to the size of the level and screen frame

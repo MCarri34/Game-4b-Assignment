@@ -269,12 +269,7 @@ export class Platformer extends Phaser.Scene {
         // Spawn enemies and powerups
         this.spawnEnemies();
         this.spawnPowerUps();
-    
-        // Debug key
-        this.input.keyboard.on('keydown-D', () => {
-            this.physics.world.drawDebug = !this.physics.world.drawDebug;
-            this.physics.world.debugGraphic.clear();
-            }, this);
+
     }                                                                                       // End of CREATE()
 
     // Callback for bouncepads
