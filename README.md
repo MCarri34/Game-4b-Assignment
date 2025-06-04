@@ -1,4 +1,4 @@
-# Climb.exe
+# Climb.EXE
 
 **By:** Noah Billedo and Michael Carrillo  
 **Built With:** Phaser 3, Tiled, JavaScript
@@ -7,7 +7,7 @@
 
 ## 🎮 Game Overview
 
-**Climb.exe** is a vertical platformer where your goal is to reach the top of a treacherous level filled with enemies, coins, and checkpoints. Inspired by old-school arcade difficulty and modern polish, Climb.exe challenges you to plan your movement carefully and collect coins to unlock checkpoints along the way.
+**Climb.EXE** is a vertical platformer where your goal is to reach the top of a treacherous level filled with enemies, coins, and checkpoints. Inspired by old-school arcade difficulty and modern polish, Climb.exe challenges you to plan your movement carefully and collect coins to unlock checkpoints along the way.
 
 ---
 
@@ -19,11 +19,11 @@
 - **Pause**: P  
 - **Restart**: R (can only be used while paused or on the victory screen)
 
-💡 **Goal:** Reach the top of the level while managing resources (coins) and activating checkpoints to save progress.
+💡 **Goal:** Reach the top of the level while collecting coins and using said coins to activate checkpoints to save progress.
 
 ---
 
-## ✅ Custom Rubric
+## ✅ Implementation
 
 - [x] **Horizontal Movement**
 - [x] **Jumping Mechanics**
@@ -33,16 +33,15 @@
 - [x] **Death + Respawn System**
 - [x] **Pause / Restart System**
 - [x] **Victory State + End Screen**
-- [x] **Custom Sound Effects**
+- [x] **Sound Effects**
 - [x] **Tilemap Integration from Tiled**
 
 ### ✔ Game Feel / Juice
 
 - [x] **Walking and Wall-Sliding Particles**
 - [x] **Death Particle Effects**
-- [x] **Victory Sound + Scene Transition**
+- [x] **Victory Sound**
 - [x] **Animations for Enemies and Coins**
-- [x] **UI for Checkpoints**
 - [x] **Clean Visual Style with 1-bit Tileset**
 
 ---
@@ -69,7 +68,7 @@
 - Enemies patrol and kill on contact unless jumped on.
 - Coin animation manually toggles between two frames.
 - Checkpoints animate based on activation state (tile ID between 20–22).
-- Player power-ups and particle effects for movement polish.
+- Player power-ups and particle effects for added juice to movement.
 
 ---
 
